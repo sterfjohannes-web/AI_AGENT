@@ -1,0 +1,24 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#0b1220"><title>Rohstoff Agent</title>
+<style>body{margin:0;font:15px system-ui;background:#0b1220;color:#e8edf5;padding:14px;max-width:640px;margin:auto}
+h1{font-size:20px;margin:4px 0}h2{font-size:15px;color:#f5b942;margin:18px 0 8px}.c{background:#152038;border-radius:12px;padding:12px;margin:8px 0}
+.r{display:flex;justify-content:space-between;align-items:center}.b{padding:3px 10px;border-radius:8px;font-weight:700}
+.BUY{background:#1e8f55}.SELL{background:#c0392b}.HOLD{background:#6b7280}.s{font-size:12px;color:#9fb0c8;margin-top:6px}
+.up{color:#3ddc84}.dn{color:#ff6b6b}.w{background:#5a4a12;padding:8px;border-radius:8px;font-size:12px}
+.t{display:flex;gap:6px;margin:10px 0}.t button{flex:1;padding:8px;border:0;border-radius:8px;background:#152038;color:#fff}.t .a{background:#f5b942;color:#000}</style></head><body>
+<h1>📈 Rohstoff-Agent</h1><div id="d" class="s"></div><div id="w"></div>
+<div class="c" id="sum"></div>
+<div class="t"><button id="b1" class="a">Signale</button><button id="b2">Märkte</button></div>
+<div id="v"></div><div class="s" id="dis"></div>
+<script>
+let R;const f=x=>(x>0?"+":"")+x+"%",k=x=>`<span class="${x>=0?"up":"dn"}">${f(x)}</span>`;
+function sig(x){return`<div class="c"><div class="r"><b>${x.name}</b><span class="b ${x.signal}">${x.signal}</span></div>
+<div class="r"><span>${x.price} ${k(x.chg1d)}</span><span class="s">Konfidenz ${x.confidence}%</span></div>
+<div class="s">Kurzfristig: ${x.short_trend} · Langfristig: ${x.long_trend}</div>
+<div class="s">Einstieg ${x.entry} · Stop ${x.stop} · Ziel ${x.target}</div><div class="s">${x.rationale}</div></div>`}
+function show(t){b1.className=t?"a":"";b2.className=t?"":"a";v.innerHTML=(t?R.signals:R.markets).map(sig).join("")}
+b1.onclick=()=>show(1);b2.onclick=()=>show(0);
+fetch("report.json",{cache:"no-store"}).then(r=>r.json()).then(r=>{R=r;d.textContent="Stand: "+r.date;
+if(r.demo)w.innerHTML='<div class="w">⚠ DEMO-Daten (keine Live-Kurse)</div>';sum.textContent=r.summary;dis.textContent=r.disclaimer;show(1)});
+if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js");
+</script></body></html>
